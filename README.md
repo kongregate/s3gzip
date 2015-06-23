@@ -8,17 +8,14 @@ Read and write gziped content in S3 without hitting disk.
 ```ruby
 require 's3gzip'
 
-id='S3_ACCESS_KEY_ID'
-secret='S3_SECRET_ACCESS_KEY'
-
 bucket='MY_BUCKET'
 filename='a/folder/with/filename.gz'
 
-S3Gzip::Writer.open(id, secret, bucket, filename) do |writer|
+S3Gzip::Writer.open(bucket, filename) do |writer|
   writer.write 'some content, gzipped, then stored in s3.'
 end
 
-result = S3Gzip::Reader.read(id, secret, bucket, filename)
+result = S3Gzip::Reader.read(bucket, filename)
 
 puts result
 # Output:
@@ -32,22 +29,19 @@ You can use `S3Gzip::Writer` in a variety of ways from a one-liner to many-liner
 ```
 require 's3gzip'
 
-id = 'S3_ACCESS_KEY_ID'
-secret = 'S3_SECRET_ACCESS_KEY'
-
 bucket = 'MY_BUCKET'
 filename = 'a/folder/with/filename.gz'
 content = 'some content, gzipped, then stored in s3.'
 
-writer = S3Gzip::Writer.new(id, secret, bucket, filename)
+writer = S3Gzip::Writer.new(bucket, filename)
 writer.write content
 writer.close_and_send
 
-S3Gzip::Writer.open(id, secret, bucket, filename) do |writer|
+S3Gzip::Writer.open(bucket, filename) do |writer|
   writer.write content
 end
 
-S3Gzip::Writer.write(id, secret, bucket, filename, content)
+S3Gzip::Writer.write(bucket, filename, content)
 ``` 
 
 When using the first method, `close_and_send` must be called. This is done automatically when using `open` or `write` class methods. 
