@@ -6,17 +6,12 @@ module S3Gzip
     attr_reader :bucket
     attr_reader :filename
 
-    def initialize(access_key_id, secret_access_key, bucket, filename)
+    def initialize(bucket, filename)
 
-      @access_key_id = access_key_id
-      @secret_access_key = secret_access_key
       @bucket = bucket
       @filename = filename
 
-      s3 = AWS::S3.new(
-        :access_key_id => access_key_id,
-        :secret_access_key => secret_access_key
-      )
+      s3 = AWS::S3.new
       bucket = s3.buckets[bucket]
       s3_object = bucket.objects[filename]
       @io = S3io.open(s3_object, 'w')
@@ -46,8 +41,8 @@ module S3Gzip
       writer.close if writer && block_given?
     end
 
-    def self.write(access_key_id, secret_access_key, bucket, filename, value)
-      writer = new(access_key_id, secret_access_key, bucket, filename)
+    def self.write(bucket, filename, value)
+      writer = new(bucket, filename)
       writer.write(value)
       writer.close
     end
